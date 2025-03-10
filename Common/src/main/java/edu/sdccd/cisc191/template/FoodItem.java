@@ -2,17 +2,17 @@ package edu.sdccd.cisc191.template;
 
 import java.util.Date;
 
-public abstract class FoodItem implements Perishable {
+public class FoodItem {
     private String name;
-    private int quantity;
+    private String foodType;
+    private double quantity;
     private Date expirationDate;
-    private String storageType;
 
-    public FoodItem(String name, int quantity, Date expirationDate, String storageType) {
+    public FoodItem(String name, String foodType, double quantity, Date expirationDate) {
         this.name = name;
+        this.foodType = foodType;
         this.quantity = quantity;
         this.expirationDate = expirationDate;
-        this.storageType = storageType;
     }
 
     public String getName() {
@@ -23,11 +23,19 @@ public abstract class FoodItem implements Perishable {
         this.name = name;
     }
 
-    public int getQuantity() {
+    public String getFoodType() {
+        return foodType;
+    }
+
+    public void setFoodType(String foodType) {
+        this.foodType = foodType;
+    }
+
+    public double getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(double quantity) {
         this.quantity = quantity;
     }
 
@@ -39,22 +47,7 @@ public abstract class FoodItem implements Perishable {
         this.expirationDate = expirationDate;
     }
 
-    public String getStorageType() {
-        return storageType;
-    }
-
-    public void setStorageType(String storageType) {
-        this.storageType = storageType;
-    }
-
-    @Override
     public boolean isExpired() {
         return new Date().after(expirationDate);
-    }
-
-    @Override
-    public int daysUntilExpiration() {
-        long time = expirationDate.getTime();
-        return (int) (time / 86400000);
     }
 }
