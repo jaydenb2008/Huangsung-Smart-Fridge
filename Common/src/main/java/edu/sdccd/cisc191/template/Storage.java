@@ -3,9 +3,20 @@ package edu.sdccd.cisc191.template;
 import java.util.ArrayList;
 
 public class Storage {
-    private ArrayList<String> storage = new ArrayList<String>();
+    private ArrayList<FoodItem> storage = new ArrayList<FoodItem>();
 
-    //TODO create and format expiration date + old expiration date methods
-    //TODO add everything to the arrayList
+    //TODO add fridge item to the arrayList
+    public void addFood(FoodItem foodItem) {
+        storage.addFirst(foodItem);
+    }
+
+    //TODO remove fridge item from arraylist
+    public void removeFood(FoodItem foodItem) {
+        storage.remove(foodItem);
+    }
+
     //TODO convert arrayList to a 2D String array
+    public void convertArrayListTo2DArray() {
+
+    }
 }

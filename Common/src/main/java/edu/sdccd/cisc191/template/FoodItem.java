@@ -1,9 +1,12 @@
 package edu.sdccd.cisc191.template;
 
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Date;
 
 public class FoodItem {
     private String name;
@@ -55,7 +58,7 @@ public class FoodItem {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 
         try {
-            LocalDate expiration = LocalDate.parse(date, formatter);
+            LocalDate.parse(date, formatter);
             System.out.println("This is a valid date");
             return true;
         } catch (DateTimeParseException e) {
@@ -63,5 +66,19 @@ public class FoodItem {
         }
 
         return false;
+    }
+
+    public boolean isExpired(String date) {
+        //convert date to be of Date object
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+        Date convertedDate = null;
+
+        try {
+            convertedDate = formatter.parse(date);
+        } catch (ParseException e) {
+            System.err.println("Error parsing expiration date: " + e.getMessage());
+        }
+
+        return new Date().after(convertedDate);
     }
 }

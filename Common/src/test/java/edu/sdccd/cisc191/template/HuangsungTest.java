@@ -14,11 +14,12 @@ class HuangsungTest {
         assertTrue(eggs.getQuantityLeft() > 0);
 
         assertTrue(eggs.isDateValid(eggs.getExpirationDate()));
+        assertTrue(eggs.isExpired(eggs.getExpirationDate()));
     }
 
     @Test
     void instantiateDrink() {
-        Drink milk = new Drink("Milk", "Dairy", 0.5, "2025-03-11", true);
+        Drink milk = new Drink("Milk", "Dairy", 0.5, "2025-04-23", true);
 
         assertInstanceOf(FoodItem.class, milk);
 
@@ -26,6 +27,9 @@ class HuangsungTest {
         assertFalse(milk.getFoodType().isEmpty());
 
         assertFalse(milk.isDateValid(milk.getExpirationDate()));
+
+        milk.setExpirationDate("04-23-2025");
+        assertFalse(milk.isExpired(milk.getExpirationDate()));
 
         if (!milk.isOpened()) {
             assertEquals(1, milk.getQuantityLeft());
