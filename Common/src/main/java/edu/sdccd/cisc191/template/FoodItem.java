@@ -1,18 +1,18 @@
 package edu.sdccd.cisc191.template;
 
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class FoodItem {
     private String name;
     private String foodType;
-    private double quantityLeft;
-    private String expirationDate;
+    private float quantityLeft;
+    private Date expirationDate;
 
 
-    public FoodItem(String name, String foodType, double quantityLeft, String expirationDate) {
+    public FoodItem(String name, String foodType, float quantityLeft, Date expirationDate) {
         this.name = name;
         this.foodType = foodType;
         this.quantityLeft = quantityLeft;
@@ -35,33 +35,36 @@ public class FoodItem {
         this.foodType = foodType;
     }
 
-    public double getQuantityLeft() {
+    public float getQuantityLeft() {
         return quantityLeft;
     }
 
-    public void setQuantityLeft(double quantityLeft) {
+    public void setQuantityLeft(float quantityLeft) {
         this.quantityLeft = quantityLeft;
     }
 
-    public String getExpirationDate() {
+    public Date getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(Date expirationDate) {
         this.expirationDate = expirationDate;
     }
 
-    public boolean isDateValid(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+    public static Date convertToDate(String userInputDate) {
+        Date date = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
 
         try {
-            LocalDate expiration = LocalDate.parse(date, formatter);
-            System.out.println("This is a valid date");
-            return true;
-        } catch (DateTimeParseException e) {
-            System.out.println("Invalid date!");
+            date = formatter.parse(userInputDate);
+        } catch (ParseException e) {
+            System.out.println("Error parsing date: " + e.getMessage());
         }
 
-        return false;
+        return date;
+    }
+
+    public boolean isExpired(Date expiration) {
+        return new Date().after(expiration);
     }
 }
