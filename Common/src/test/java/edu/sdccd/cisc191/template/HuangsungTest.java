@@ -2,8 +2,6 @@ package edu.sdccd.cisc191.template;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class HuangsungTest {
@@ -58,5 +56,13 @@ class HuangsungTest {
 
         testFridge.removeFood("Bacon");
         assertEquals(4, testFridge.getItemCount());
+    }
+
+    @Test
+    void testNotifierThread() {
+        Storage testFridge = new Storage(3);
+        Notifier notifier = new Notifier("Expiration Checker", testFridge);
+
+
     }
 }
