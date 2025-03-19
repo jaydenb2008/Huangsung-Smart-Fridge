@@ -43,7 +43,7 @@ public class FoodItem {
         this.quantityLeft = quantityLeft;
     }
 
-    public Date getExpirationDate() {
+    public synchronized Date getExpirationDate() {
         return expirationDate;
     }
 
@@ -64,7 +64,7 @@ public class FoodItem {
         return date;
     }
 
-    public boolean isExpired(Date expiration) {
+    public synchronized boolean isExpired(Date expiration) {
         return new Date().after(expiration);
     }
 }

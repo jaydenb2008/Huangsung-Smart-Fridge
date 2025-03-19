@@ -27,7 +27,7 @@ public class Storage {
         return null;
     }
 
-    public void addFood(FoodItem food) {
+    public synchronized void addFood(FoodItem food) {
         if (itemCount == fridgeSize) {
             resizeArray();
         }
@@ -36,7 +36,7 @@ public class Storage {
         itemCount++;
     }
 
-    public void removeFood(String name) {
+    public synchronized void removeFood(String name) {
         boolean found = false;
         for (int i = 0; i < itemCount; i++) {
             //if index is not empty and name matches, remove item
@@ -62,7 +62,7 @@ public class Storage {
     }
 
 
-    public void resizeArray() {
+    public synchronized void resizeArray() {
         int newSize = fridgeSize + 5;
         FoodItem[][] newFridge = new FoodItem[newSize][1];
 
