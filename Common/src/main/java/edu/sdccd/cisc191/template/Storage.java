@@ -1,6 +1,11 @@
 package edu.sdccd.cisc191.template;
 
-
+/**
+ * Describes the attributes, methods, and behavior of a storage class
+ * FoodItem[][] fridge = the 2D array that will store all the FoodItem and Drink objects like a fridge
+ * int fridgeSize = the amount of food items the fridge can store
+ * int itemCount = the number of food items in the fridge (initially set to 0)
+ */
 public class Storage {
     private FoodItem[][] fridge;
     private int fridgeSize;
@@ -20,6 +25,11 @@ public class Storage {
         return fridgeSize;
     }
 
+    /**
+     * A method to obtain an item in the fridge based on its placement (index)
+     * @param index the placement of the food item in the 2d array fridge
+     * @return the item in the fridge with a placement index
+     */
     public FoodItem getFoodItem(int index) {
         if (index >= 0 && index < itemCount) {
             return fridge[index][0];
@@ -27,6 +37,11 @@ public class Storage {
         return null;
     }
 
+    /**
+     * checks if there is enough space in the 2d array and then adds the desired food item to the end of the array
+     * itemCount increases by 1
+     * @param food the food item that will be added
+     */
     public synchronized void addFood(FoodItem food) {
         if (itemCount == fridgeSize) {
             resizeArray();
@@ -36,6 +51,11 @@ public class Storage {
         itemCount++;
     }
 
+    /**
+     * removes food item from fridge and shifts all proceeding items left with the last empty slot being null
+     * itemCount decrements by 1
+     * @param name the name of the food item to be removed
+     */
     public synchronized void removeFood(String name) {
         boolean found = false;
         for (int i = 0; i < itemCount; i++) {
@@ -62,6 +82,10 @@ public class Storage {
     }
 
 
+    /**
+     * If the fridge is full when the user wants to add another food item, this method will be called
+     * adds 5 more spaces to the fridge and copies over the items in the old fridge to the new one
+     */
     public synchronized void resizeArray() {
         int newSize = fridgeSize + 5;
         FoodItem[][] newFridge = new FoodItem[newSize][1];

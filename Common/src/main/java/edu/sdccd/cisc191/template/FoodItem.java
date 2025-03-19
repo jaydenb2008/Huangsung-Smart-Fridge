@@ -5,6 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * This class defines the attributes and methods of a food object that will be stored in the Huangsung Smart Fridge
+ * String name: the name of the food
+ * String foodType: the category the food belongs to (i.e. cheese belongs to dairy)
+ * float quantityLeft: the amount remaining of said food (i.e. 4 tomatoes)
+ * Date expirationDate: the date the food expires (in PST)
+ */
+
 public class FoodItem {
     private String name;
     private String foodType;
@@ -51,6 +59,11 @@ public class FoodItem {
         this.expirationDate = expirationDate;
     }
 
+    /**
+     * Converts the user's valid String expiration date input into a Date for constructing the FoodItem object
+     * @param userInputDate = the String expiration date the user inputs in the UI
+     * @return the user's date converted from a String to a Date
+     */
     public static Date convertToDate(String userInputDate) {
         Date date = null;
         SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
@@ -64,6 +77,11 @@ public class FoodItem {
         return date;
     }
 
+    /**
+     * Checks if the food item is expired based on the current date and expirationDate attribute
+     * @param expiration the expiration date of the food item
+     * @return true if the current date is after the expiration date, false otherwise
+     */
     public synchronized boolean isExpired(Date expiration) {
         return new Date().after(expiration);
     }
