@@ -127,7 +127,7 @@ public class UI {
         Button addRowButton = new Button("Add New Row");
         addRowButton.setStyle("-fx-font-size: 16px; -fx-background-color: white;");
         addRowButton.setLayoutX(350);
-        addRowButton.setLayoutY(450);
+        addRowButton.setLayoutY(475);
         addRowButton.setOnAction(e -> {
             // New blank row to the table
             table.getItems().add(new FoodItem("", "", 0, new Date()));
@@ -135,6 +135,31 @@ public class UI {
 
         root.getChildren().add(addRowButton);
 
+        // Button to allow removing a row
+        Button removeRowButton = new Button("Remove Selected Item");
+        removeRowButton.setStyle("-fx-font-size: 16px; -fx-background-color: white;");
+        removeRowButton.setLayoutX(475); // Same X position as the "Add New Row" button
+        removeRowButton.setLayoutY(475); // Position it below the "Add New Row" button (adjust as needed)
+
+        removeRowButton.setOnAction(e -> {
+            // Get the selected food item in the table
+            FoodItem selectedItem = table.getSelectionModel().getSelectedItem();
+
+            if (selectedItem != null) {
+                // Remove from the Storage
+                storage.removeFood(selectedItem.getName());
+
+                // Remove the item from the TableView
+                table.getItems().remove(selectedItem);
+
+                System.out.println(selectedItem.getName() + " has been removed from the fridge.");
+            } else {
+                System.out.println("No item selected for removal.");
+            }
+        });
+
+// Add the remove row button to the root pane (assuming you already have 'root' pane created)
+        root.getChildren().add(removeRowButton);
         // Create and set the Scene
         Scene scene = new Scene(root, 900, 700);
         window.setScene(scene);
