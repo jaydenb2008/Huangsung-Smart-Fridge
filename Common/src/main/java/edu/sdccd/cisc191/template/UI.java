@@ -138,7 +138,7 @@ public class UI {
         // Button to allow removing a row
         Button removeRowButton = new Button("Remove Selected Item");
         removeRowButton.setStyle("-fx-font-size: 16px; -fx-background-color: white;");
-        removeRowButton.setLayoutX(475); // Same X position as the "Add New Row" button
+        removeRowButton.setLayoutX(474); // Same X position as the "Add New Row" button
         removeRowButton.setLayoutY(475); // Position it below the "Add New Row" button (adjust as needed)
 
         removeRowButton.setOnAction(e -> {
