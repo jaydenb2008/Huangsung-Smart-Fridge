@@ -1,11 +1,14 @@
 package edu.sdccd.cisc191.template;
 
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -102,15 +105,26 @@ public class UI {
         TableColumn<FoodItem, String> expirationDateColumn = new TableColumn<>("Expiration Date");
         expirationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(new SimpleDateFormat("MM-dd-yyyy").format(cellData.getValue().getExpirationDate())));
         expirationDateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        expirationDateColumn.setOnEditCommit(event -> {
-            addFoodItem();
-        });
+
+            TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
+            isOpenedColumn.setCellValueFactory(cellData -> {
+                if (cellData.getValue() instanceof Drink) {
+                    return ((Drink) cellData.getValue()).isOpenedProperty().asObject();
+                }
+                return new SimpleBooleanProperty(false).asObject();
+            });
+            isOpenedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
+            isOpenedColumn.setOnEditCommit(event -> {
+                if (event.getRowValue() instanceof Drink) {
+                    ((Drink) event.getRowValue()).setOpened(event.getNewValue());
+                }
+            });
 
         // Adding columns to the table
-        table.getColumns().addAll(nameColumn, foodTypeColumn, quantityLeftColumn, expirationDateColumn);
+        table.getColumns().addAll(nameColumn, foodTypeColumn, quantityLeftColumn, expirationDateColumn, isOpenedColumn);
 
         // Initial data
-        table.getItems().add(new FoodItem("Milk", "Dairy", 2.5f, new Date()));
+        table.getItems().add(new Drink("Milk", "Dairy", 0.5f, new Date(), false));
 
         // Load stored food items into table
         loadStoredItems();
@@ -123,6 +137,11 @@ public class UI {
         table.setPrefWidth(650);
         table.setPrefHeight(500);
 
+        CheckBox drinkCheckBox = new CheckBox("Is it a Drink?");
+        drinkCheckBox.setLayoutX(370);
+        drinkCheckBox.setLayoutY(420);
+        root.getChildren().add(drinkCheckBox);
+
         // Button to allow adding a new row
         Button addRowButton = new Button("Add New Row");
         addRowButton.setStyle("-fx-font-size: 16px; -fx-background-color: white;");
@@ -130,7 +149,7 @@ public class UI {
         addRowButton.setLayoutY(475);
         addRowButton.setOnAction(e -> {
             // New blank row to the table
-            table.getItems().add(new FoodItem("", "", 0, new Date()));
+            addFoodItem(drinkCheckBox.isSelected());
         });
 
         root.getChildren().add(addRowButton);
@@ -158,7 +177,6 @@ public class UI {
             }
         });
 
-// Add the remove row button to the root pane (assuming you already have 'root' pane created)
         root.getChildren().add(removeRowButton);
         // Create and set the Scene
         Scene scene = new Scene(root, 900, 700);
@@ -172,15 +190,23 @@ public class UI {
     private void loadStoredItems() {
         table.getItems().clear();
         for (int i = 0; i < storage.getItemCount(); i++) {
-            table.getItems().add(storage.getFoodItem(i));
+            FoodItem item = storage.getFoodItem(i);
+            table.getItems().add(item);
         }
     }
 
     /**
-     * Adds a new food item to `Storage` and updates the UI.
+     * Adds a new food item or drink to `Storage` and updates the UI.
      */
-    private void addFoodItem() {
-        FoodItem newItem = new FoodItem("New Item", "Unknown", 1.0f, new Date());
+    private void addFoodItem(boolean isDrink) {
+        FoodItem newItem;
+
+        if (isDrink) {
+            newItem = new Drink("New Drink", "Beverage", 1.0f, new Date(), false);
+        } else {
+            newItem = new FoodItem("New Item", "Unknown", 1.0f, new Date());
+        }
+
         storage.addFood(newItem);
         table.getItems().add(newItem);
     }

@@ -1,5 +1,8 @@
 package edu.sdccd.cisc191.template;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+
 import java.util.Date;
 
 /**
@@ -8,18 +11,23 @@ import java.util.Date;
  * float quantityLeft: inherited from FoodItem but is used to describe the fraction of the drink remaining (i.e. 0.5f of the bottle of lemonade remaining)
  */
 public class Drink extends FoodItem {
-    private boolean isOpened;
+
+    //SimpleBooleanProperty used to notify UI changes
+    private BooleanProperty isOpened = new SimpleBooleanProperty(false);
+    // Set false to display default drink is not opened
 
     public Drink(String name, String foodType, float quantityLeft, Date expirationDate, boolean isOpened) {
         super(name, foodType, quantityLeft, expirationDate);
-        this.isOpened = isOpened;
+        this.isOpened.set(isOpened);
     }
 
     public boolean isOpened() {
-        return isOpened;
+        return isOpened.get();
     }
-
+    // .get() and.set() used for javaFX binding and helps checkboxes in UI work properly
     public void setOpened(boolean opened) {
-        isOpened = opened;
+        isOpened.set(opened);
     }
+    public BooleanProperty isOpenedProperty() {
+        return isOpened; }
 }
