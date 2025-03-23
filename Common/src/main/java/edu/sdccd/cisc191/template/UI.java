@@ -21,12 +21,16 @@ import java.util.Date;
 
 public class UI {
 
-
     FridgeManager fm;
     Stage window;
+    private Storage storage;
+    public TableView<FoodItem> table;
 
-    public UI(FridgeManager fm) {
+
+    public UI(FridgeManager fm, Storage storage) {
         this.fm = fm;
+        this.storage = storage;
+
     }
 
 
@@ -74,7 +78,7 @@ public class UI {
         window.setHeight(900);
 
         // TableView for the fridge groceries
-        TableView<FoodItem> table = new TableView<>();
+        table = new TableView<>();
         table.setEditable(true);
 
         // Name Column
@@ -110,6 +114,9 @@ public class UI {
         // Initial data
         table.getItems().add(new FoodItem("Milk", "Dairy", 2.5f, new Date()));
 
+        // Load stored food items into table
+        loadStoredItems();
+
         Pane root = new Pane();
         root.getChildren().add(table);
         root.setStyle("-fx-background-color: black;");
@@ -125,7 +132,7 @@ public class UI {
         addRowButton.setLayoutY(450);
         addRowButton.setOnAction(e -> {
             // New blank row to the table
-            table.getItems().add(new FoodItem("", "", 0, new Date()));
+            addFoodItem();
         });
 
         root.getChildren().add(addRowButton);
@@ -134,6 +141,25 @@ public class UI {
         Scene scene = new Scene(root, 900, 700);
         window.setScene(scene);
         window.show();
+    }
+
+    /**
+     * Loads stored items from `Storage` into the UI TableView.
+     */
+    private void loadStoredItems() {
+        table.getItems().clear();
+        for (int i = 0; i < storage.getItemCount(); i++) {
+            table.getItems().add(storage.getFoodItem(i));
+        }
+    }
+
+    /**
+     * Adds a new food item to `Storage` and updates the UI.
+     */
+    public void addFoodItem() {
+        FoodItem newItem = new FoodItem("New Item", "Unknown", 1.0f, new Date());
+        storage.addFood(newItem);
+        table.getItems().add(newItem);
     }
     /**
      * Add images of food items later

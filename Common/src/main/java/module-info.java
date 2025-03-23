@@ -4,6 +4,5 @@ module Common {
     requires java.desktop;
     requires javafx.controls;
 
-
     exports edu.sdccd.cisc191.template to javafx.graphics;
 }
