@@ -7,8 +7,8 @@ import javafx.stage.Stage;
 
 public class FridgeManager extends Application {
 
-
-    public UI ui = new UI(this);
+    private Storage storage = new Storage(10);
+    public UI ui = new UI(this, storage);
 
 
     public static void main(String[] args) {
@@ -22,5 +22,9 @@ public class FridgeManager extends Application {
 
 
         ui.createStartScreen(primaryStage);
+    }
+
+    public Storage getStorage() {
+        return storage;
     }
 }
