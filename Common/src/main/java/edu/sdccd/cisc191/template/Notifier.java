@@ -1,5 +1,8 @@
 package edu.sdccd.cisc191.template;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,11 +55,29 @@ public class Notifier extends Thread {
             }
 
             if (expiredCount > 0) {
-                ui.showExpirationAlert(expiredItems); // Notify the UI
+                Platform.runLater(() -> {
+                    showExpirationAlert(expiredItems);
+                }); // Notify the UI
             }
 
         } catch (EmptyFridgeException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public void showExpirationAlert(String[][] expiredItems) {
+        StringBuilder message = new StringBuilder("The following items are expired:\n");
+
+        for (String[] itemRow : expiredItems) {
+            if (itemRow[0] != null) {
+                message.append("- ").append(itemRow[0]).append("\n");
+            }
+        }
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Expired Items Alert");
+        alert.setHeaderText("Some food items have expired!");
+        alert.setContentText(message.toString());
+        alert.showAndWait();
     }
 }

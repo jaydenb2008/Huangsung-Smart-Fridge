@@ -25,16 +25,20 @@ import javafx.util.converter.FloatStringConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
-
+/**
+ * This class defines the UI of the program.
+ * Contains a start screen and a tableview of all the foods and drinks the user inputs
+ * Starts the notifier warning the user of expired foods
+ * Loads and saves all the foods into csv
+ */
 public class UI {
 
 
     FridgeManager fm;
     Stage window;
-    private Storage storage;
-    private TableView<FoodItem> table;
+    private final Storage storage;
+    protected TableView<FoodItem> table;
     private static final String CSV_FILE = "food_items.csv";
 
     public UI(FridgeManager fm, Storage storage) {
@@ -42,7 +46,10 @@ public class UI {
         this.storage = storage;
     }
 
-
+    /**
+     * Render the screen that shows the start screen
+     * @param primaryStage the window that will render the start screen
+     */
     public void createStartScreen(Stage primaryStage) {
         this.window = primaryStage;
         window.setTitle("Huangsung Smart-Fridge");
@@ -80,6 +87,10 @@ public class UI {
         window.show();
     }
 
+    /**
+     * Render the screen that shows all the foodItems
+     * @param primaryStage the window that will render the table of food items
+     */
     public void createMainField(Stage primaryStage) {
         this.window = primaryStage;
         window.setTitle("Huangsung Smart-Fridge");
@@ -89,10 +100,6 @@ public class UI {
         // TableView for the fridge groceries
         table = new TableView<>();
         table.setEditable(true);
-
-        // Start the Notifier thread
-        Notifier notifier = new Notifier("UI notifier",storage, this);
-        notifier.start();
 
 
         // Name Column
@@ -152,10 +159,15 @@ public class UI {
         table.getColumns().addAll(nameColumn, foodTypeColumn, quantityLeftColumn, expirationDateColumn, isOpenedColumn);
 
         // Initial data
-        table.getItems().add(new Drink("Milk", "Dairy", 0.5f, new Date(), false));
+        //table.getItems().add(new Drink("Milk", "Dairy", 0.5f, new Date(), false));
 
         // Load stored food items into table
         loadStoredItems();
+
+        if(storage.getItemCount() > 0) {
+            Notifier notifier = new Notifier("UI notifier", storage, this);
+            notifier.start();
+        }
 
         Pane root = new Pane();
         root.getChildren().add(table);
@@ -205,16 +217,27 @@ public class UI {
      * Loads stored items from `Storage` into the UI TableView.
      */
     private void loadStoredItems() {
-        List<FoodItem> items = LoadFood.loadFoodItems(CSV_FILE);
-        table.getItems().setAll(items);
+        // Load items into the Storage object directly
+        LoadFood.loadFoodItems(CSV_FILE, storage);
+
+        // Assuming storage.getItemCount() returns the number of valid items in the Storage's 2D array
+        for (int i = 0; i < storage.getItemCount(); i++) {
+            FoodItem item = storage.getFoodItem(i);
+            if (item != null) {
+                table.getItems().add(item);  // Add non-null items to the table
+            }
+        }
     }
 
+
+
     private void saveCurrentItems() {
-        LoadFood.saveFoodItems(CSV_FILE, table.getItems());
+        LoadFood.saveFoodItems(CSV_FILE, storage);
     }
 
     /**
      * Adds a new food item or drink to `Storage` and updates the UI.
+     * @param isDrink if the drink box is checked a drink object will be instantiated
      */
     private void addFoodItem(boolean isDrink) {
         FoodItem newItem;
@@ -246,21 +269,5 @@ public class UI {
             System.out.println("No item selected for removal.");
         }
     }
-    public void showExpirationAlert(String[][] expiredItems) {
-        StringBuilder message = new StringBuilder("The following items are expired:\n");
-
-        for (String[] itemRow : expiredItems) {
-            if (itemRow[0] != null) {
-                message.append("- ").append(itemRow[0]).append("\n");
-            }
-        }
-
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Expired Items Alert");
-        alert.setHeaderText("Some food items have expired!");
-        alert.setContentText(message.toString());
-        alert.showAndWait();
-
-}
 }
 

@@ -10,7 +10,7 @@ class HuangsungTest {
     void instantiateDrink() {
         Drink milk = new Drink("Milk", "Dairy", 0.5f, Drink.convertToDate("04-16-2025"), true);
 
-        assertInstanceOf(FoodItem.class, milk);
+        assertTrue(milk instanceof FoodItem);
 
         assertFalse(milk.getName().isEmpty());
         assertFalse(milk.getFoodType().isEmpty());

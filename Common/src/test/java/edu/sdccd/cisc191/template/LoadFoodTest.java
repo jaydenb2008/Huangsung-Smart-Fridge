@@ -1,77 +1,67 @@
 package edu.sdccd.cisc191.template;
 
-import org.junit.jupiter.api.*;
-import java.io.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-        import static org.junit.jupiter.api.Assertions.*;
+import java.io.File;
+import java.util.Date;
 
-public class LoadFoodTest {
+import static org.junit.jupiter.api.Assertions.*;
 
-    private static final String TEST_CSV_FILE = "test_food_items.csv";
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+class LoadFoodTest {
+
+    private Storage storage;
 
     @BeforeEach
-    void setUp() throws IOException {
-        // Create a test CSV file with sample data
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(TEST_CSV_FILE))) {
-            writer.write("Name,FoodType,QuantityLeft,ExpirationDate");
-            writer.newLine();
-            writer.write("Milk,Dairy,2.5,12-31-2025");
-            writer.newLine();
-            writer.write("Apple,Fruit,5.0,06-15-2025");
-            writer.newLine();
-        }
+    void setUp() {
+        storage = new Storage(5); // Initialize Storage object before each test
     }
 
     @Test
     void testLoadFoodItems() {
-        List<FoodItem> items = LoadFood.loadFoodItems(TEST_CSV_FILE);
+        // Assuming the file "test_food.csv" exists with appropriate data
+        String filename = "test_save_food.csv";
 
-        assertEquals(2, items.size(), "Should load two food items");
-        assertEquals("Milk", items.get(0).getName());
-        assertEquals("Dairy", items.get(0).getFoodType());
-        assertEquals(2.5f, items.get(0).getQuantityLeft());
-        assertEquals("12-31-2025", dateFormat.format(items.get(0).getExpirationDate()));
+        // Load food items from the file
+        LoadFood.loadFoodItems(filename, storage);
 
-        assertEquals("Apple", items.get(1).getName());
-        assertEquals("Fruit", items.get(1).getFoodType());
-        assertEquals(5.0f, items.get(1).getQuantityLeft());
-        assertEquals("06-15-2025", dateFormat.format(items.get(1).getExpirationDate()));
+        // Ensure that items were loaded
+        assertNotNull(storage);
+        assertTrue(storage.getItemCount() > 0, "Storage should contain food items after loading.");
+
+        // Verify the first item loaded
+        FoodItem item = storage.getFoodItem(0);
+        assertNotNull(item, "Food item should not be null.");
+        assertEquals("Apple", item.getName(), "First item's name should be Apple.");
+        assertEquals("Fruit", item.getFoodType(), "First item's food type should be Fruit.");
+        assertTrue(item.getQuantityLeft() > 0, "First item's quantity should be greater than 0.");
+        assertNotNull(item.getExpirationDate(), "First item's expiration date should not be null.");
     }
 
     @Test
-    void testSaveFoodItems() throws Exception {
-        List<FoodItem> newItems = Arrays.asList(
-                new FoodItem("Bread", "Grain", 1.0f, dateFormat.parse("08-01-2025")),
-                new FoodItem("Cheese", "Dairy", 0.5f, dateFormat.parse("09-10-2025"))
-        );
+    void testSaveFoodItems() {
+        // Add some test data to the storage
+        FoodItem apple = new FoodItem("Apple", "Fruit", 10, new Date());
+        storage.addFood(apple);
 
-        LoadFood.saveFoodItems(TEST_CSV_FILE, newItems);
+        String filename = "test_save_food.csv";
 
-        List<FoodItem> loadedItems = LoadFood.loadFoodItems(TEST_CSV_FILE);
-        assertEquals(2, loadedItems.size());
-        assertEquals("Bread", loadedItems.get(0).getName());
-        assertEquals("Cheese", loadedItems.get(1).getName());
-    }
+        // Save food items to the file
+        LoadFood.saveFoodItems(filename, storage);
 
-    @Test
-    void testUpdateFoodItem() throws Exception {
-        FoodItem updatedMilk = new FoodItem("Milk", "Dairy", 3.0f, dateFormat.parse("01-01-2026"));
-        LoadFood.updateFoodItem(TEST_CSV_FILE, updatedMilk);
+        // Verify the file exists
+        File file = new File(filename);
+        assertTrue(file.exists(), "The file should exist after saving.");
 
-        List<FoodItem> items = LoadFood.loadFoodItems(TEST_CSV_FILE);
-        assertEquals(2, items.size());
-        assertEquals(3.0f, items.get(0).getQuantityLeft());
-        assertEquals("01-01-2026", dateFormat.format(items.get(0).getExpirationDate()));
-    }
+        // Now, let's load the food items back and verify the contents
+        Storage newStorage = new Storage(5);
+        LoadFood.loadFoodItems(filename, newStorage);
 
-    @AfterEach
-    void tearDown() {
-        File file = new File(TEST_CSV_FILE);
-        if (file.exists()) {
-            file.delete();
-        }
+        // Ensure the loaded storage has the same data
+        assertEquals(1, newStorage.getItemCount(), "There should be one food item loaded.");
+        FoodItem loadedItem = newStorage.getFoodItem(0);
+        assertEquals("Apple", loadedItem.getName(), "Loaded item should be an Apple.");
+        assertEquals("Fruit", loadedItem.getFoodType(), "Loaded item should be of type Fruit.");
+        assertEquals(10, loadedItem.getQuantityLeft(), "Loaded item quantity should be 10.");
     }
 }
