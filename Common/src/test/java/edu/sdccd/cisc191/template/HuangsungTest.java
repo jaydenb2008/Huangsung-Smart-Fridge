@@ -75,8 +75,12 @@ class HuangsungTest {
         int notifierCount = testFridge.getFridgeSize();
         Notifier[] notifiers = new Notifier[notifierCount];
 
+        FridgeManager dummyManager = new FridgeManager();  // Dummy FridgeManager
+        Storage testFridge2 = new Storage(4);
+        UI dummyUI = new UI(dummyManager, testFridge2);
+
         for (int i = 0; i < notifierCount; i++) {
-            notifiers[i] = new Notifier("Expiration Notifier " + i, testFridge);
+            notifiers[i] = new Notifier("Expiration Notifier " + i, testFridge, dummyUI);
         }
 
         for (int i = 0; i < notifierCount; i++) {
