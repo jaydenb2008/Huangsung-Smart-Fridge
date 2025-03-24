@@ -1,13 +1,19 @@
 package edu.sdccd.cisc191.template;
 
-
+/**
+ * This class provides a GUI to interact with the Smart Fridge.
+ * The interface features a main screen displaying a table of food items, with options to add, edit, and remove items.
+ * The system also supports saving and loading food items from a CSV file.
+ *
+ * Users can interact with the following components:
+ * - A TableView to display food items with editable fields such as name, food type, quantity, and expiration date.
+ * - Buttons to add and remove food items, and a checkbox to specify whether an item is a drink.
+ */
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.Pane;
@@ -15,11 +21,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
 import javafx.util.converter.FloatStringConverter;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 
 public class UI {
@@ -29,6 +35,7 @@ public class UI {
     Stage window;
     private Storage storage;
     private TableView<FoodItem> table;
+    private static final String CSV_FILE = "food_items.csv";
 
     public UI(FridgeManager fm, Storage storage) {
         this.fm = fm;
@@ -83,28 +90,48 @@ public class UI {
         table = new TableView<>();
         table.setEditable(true);
 
+        // Start the Notifier thread
+        Notifier notifier = new Notifier("UI notifier",storage, this);
+        notifier.start();
+
+
         // Name Column
         TableColumn<FoodItem, String> nameColumn = new TableColumn<>("Name");
         nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
         nameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        nameColumn.setOnEditCommit(event -> event.getRowValue().setName(event.getNewValue()));
+        nameColumn.setOnEditCommit(event -> {
+            event.getRowValue().setName(event.getNewValue());
+            saveCurrentItems();
+        });
 
         // Food Type Column
         TableColumn<FoodItem, String> foodTypeColumn = new TableColumn<>("Food Type");
         foodTypeColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getFoodType()));
         foodTypeColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        foodTypeColumn.setOnEditCommit(event -> event.getRowValue().setFoodType(event.getNewValue()));
+        foodTypeColumn.setOnEditCommit(event -> {
+            event.getRowValue().setFoodType(event.getNewValue());
+            saveCurrentItems();
+        });
 
         // Quantity Left Column
         TableColumn<FoodItem, Float> quantityLeftColumn = new TableColumn<>("Quantity Left");
         quantityLeftColumn.setCellValueFactory(cellData -> new SimpleFloatProperty(cellData.getValue().getQuantityLeft()).asObject());
         quantityLeftColumn.setCellFactory(TextFieldTableCell.forTableColumn(new FloatStringConverter()));
-        quantityLeftColumn.setOnEditCommit(event -> event.getRowValue().setQuantityLeft(event.getNewValue()));
+        quantityLeftColumn.setOnEditCommit(event -> {
+            event.getRowValue().setQuantityLeft(event.getNewValue());
+            saveCurrentItems();
+        });
 
         // Expiration Date Column
         TableColumn<FoodItem, String> expirationDateColumn = new TableColumn<>("Expiration Date");
         expirationDateColumn.setCellValueFactory(cellData -> new SimpleStringProperty(new SimpleDateFormat("MM-dd-yyyy").format(cellData.getValue().getExpirationDate())));
         expirationDateColumn.setCellFactory(TextFieldTableCell.forTableColumn());
+        expirationDateColumn.setOnEditCommit(event -> {
+            Date newDate = FoodItem.convertToDate(event.getNewValue());
+            event.getRowValue().setExpirationDate(newDate);
+            saveCurrentItems();
+        });
+
 
             TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
             isOpenedColumn.setCellValueFactory(cellData -> {
@@ -117,6 +144,7 @@ public class UI {
             isOpenedColumn.setOnEditCommit(event -> {
                 if (event.getRowValue() instanceof Drink) {
                     ((Drink) event.getRowValue()).setOpened(event.getNewValue());
+                    saveCurrentItems();
                 }
             });
 
@@ -150,6 +178,7 @@ public class UI {
         addRowButton.setOnAction(e -> {
             // New blank row to the table
             addFoodItem(drinkCheckBox.isSelected());
+            saveCurrentItems();
         });
 
         root.getChildren().add(addRowButton);
@@ -161,20 +190,8 @@ public class UI {
         removeRowButton.setLayoutY(475); // Position it below the "Add New Row" button (adjust as needed)
 
         removeRowButton.setOnAction(e -> {
-            // Get the selected food item in the table
-            FoodItem selectedItem = table.getSelectionModel().getSelectedItem();
-
-            if (selectedItem != null) {
-                // Remove from the Storage
-                storage.removeFood(selectedItem.getName());
-
-                // Remove the item from the TableView
-                table.getItems().remove(selectedItem);
-
-                System.out.println(selectedItem.getName() + " has been removed from the fridge.");
-            } else {
-                System.out.println("No item selected for removal.");
-            }
+            removeSelectedItem();
+            saveCurrentItems();
         });
 
         root.getChildren().add(removeRowButton);
@@ -188,11 +205,12 @@ public class UI {
      * Loads stored items from `Storage` into the UI TableView.
      */
     private void loadStoredItems() {
-        table.getItems().clear();
-        for (int i = 0; i < storage.getItemCount(); i++) {
-            FoodItem item = storage.getFoodItem(i);
-            table.getItems().add(item);
-        }
+        List<FoodItem> items = LoadFood.loadFoodItems(CSV_FILE);
+        table.getItems().setAll(items);
+    }
+
+    private void saveCurrentItems() {
+        LoadFood.saveFoodItems(CSV_FILE, table.getItems());
     }
 
     /**
@@ -210,22 +228,39 @@ public class UI {
         storage.addFood(newItem);
         table.getItems().add(newItem);
     }
-}
-    /**
-     * Add images of food items later
-    public void createObject(int bgNum, int objx, int objy, int objWidth, int objHeight, String objFileName) {
 
+    private void removeSelectedItem() {
 
-        // For food items and trash can
-        Image objectImage = new Image(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(objFileName)));
-        ImageView objectImageView = new ImageView(objectImage);
-        objectImageView.setFitWidth(objWidth);
-        objectImageView.setFitHeight(objHeight);
-        objectImageView.setLayoutX(objx);
-        objectImageView.setLayoutY(objy);
+        // Get the selected food item in the table
+        FoodItem selectedItem = table.getSelectionModel().getSelectedItem();
 
+        if (selectedItem != null) {
+            // Remove from the Storage
+            storage.removeFood(selectedItem.getName());
 
-        bgPane[bgNum].getChildren().add(objectImageView);
+            // Remove the item from the TableView
+            table.getItems().remove(selectedItem);
+
+            System.out.println(selectedItem.getName() + " has been removed from the fridge.");
+        } else {
+            System.out.println("No item selected for removal.");
+        }
     }
-    **/
+    public void showExpirationAlert(String[][] expiredItems) {
+        StringBuilder message = new StringBuilder("The following items are expired:\n");
+
+        for (String[] itemRow : expiredItems) {
+            if (itemRow[0] != null) {
+                message.append("- ").append(itemRow[0]).append("\n");
+            }
+        }
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Expired Items Alert");
+        alert.setHeaderText("Some food items have expired!");
+        alert.setContentText(message.toString());
+        alert.showAndWait();
+
+}
+}
 
