@@ -1,0 +1,5 @@
+Name,FoodType,QuantityLeft,ExpirationDate
+Cheese,Dairy,1.0,03-23-2025
+Pizza,Food,1.0,03-21-2025
+Chickem,Poultry,1.0,03-23-2025
+P,Unknown,1.0,03-24-2025
