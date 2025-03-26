@@ -16,11 +16,15 @@ public class Unit
     private int armor;
     private int health;
     private int sightRange;
+
+    //TODO change this to a float for memory efficiency
     private double unseenRange;
+
     private int speed;
     private int weight;
     private String abilities;
 
+    //TODO consider removing setters because you are rendering the stats of the units using the getters
 
     //  Constructor to Initialize the private objects in the Unit class.
     public Unit(String unitName, String unitType, String specialization, int price, int armor,

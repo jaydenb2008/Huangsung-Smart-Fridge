@@ -35,9 +35,10 @@ public class ServerTest
         Unit fighter = new Fighter("Test Fighter", "Fighter", "Air", 200, 30, 150, 400, 1.75, 300, 4000, "Test Abilities", 120);
         Unit infantry = new InfantryUnit("Test Infantry", "Infantry", "Ground", 50, 10, 100, 500, 1.0, 15, 1000, "Test Abilities", 30);
 
-        assertEquals(true, tank instanceof Unit, "Tanks inherents from Unit Class");
-        assertEquals(true, fighter instanceof Unit, "Fighter inherents from Unit Class");
-        assertEquals(true, infantry instanceof Unit, "Infantry inherents from Unit Class");
+        //cleaned up assertions for unit tests
+        assertInstanceOf(Unit.class, tank, "Tanks inherits from Unit Class");
+        assertInstanceOf(Unit.class, fighter, "Fighter inherits from Unit Class");
+        assertInstanceOf(Unit.class, infantry, "Infantry inherits from Unit Class");
 
     }
 
@@ -47,6 +48,8 @@ public class ServerTest
     {
         List<Unit> units = UnitStatsLoader.loadUnits("C:\\Users\\Nicko\\IdeaProjects\\CISC191-FinalProjectTemplate\\Server\\src\\main\\resources\\Broken Arrow Unit Stats.csv");
         assertFalse(units.isEmpty());
+
+        //TODO ensure that the data is correctly loaded with the correct attributes
     }
 
     // Test if units are being created in the UnitGenerator class
@@ -57,7 +60,8 @@ public class ServerTest
             assertNotNull(units, "The units list should be created and not null");
             assertTrue(units.isEmpty(), "The units list should be empty upon initialization");
             Unit testUnit = new Unit("Test Unit", "Infantry", "Test Specialization", 100, 10, 100, 500, 1.5, 20, 2000, "Test Abilities");
-
         }
+
+    //TODO create a unit test that ensures a unit is being rendered on a Unit Card with the correct stats
 
 }

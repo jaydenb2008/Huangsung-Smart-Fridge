@@ -17,6 +17,11 @@ import java.util.List;
 //Class used to access the CSV file and create units with the data from the file.
 public class UnitStatsLoader
 {
+    /**
+     * Method to load the units into UI
+     * @param path the path from which the data for the units loads to
+     * @return the arraylists of Unit Data
+     */
     public static List<Unit> loadUnits(String path)
     {
         List<Unit> units = new ArrayList<>();
@@ -74,11 +79,6 @@ public class UnitStatsLoader
         }
 
         //Handles any errors if the file is not found
-        catch (FileNotFoundException e)
-        {
-            throw new RuntimeException(e);
-        }
-
         // Handles any errors and if an error occurs will return an empty string.
         catch (IOException e)
         {

@@ -20,6 +20,7 @@ import java.util.List;
  * "How to Use BoxLayout"  https://docs.oracle.com/javase/tutorial/uiswing/layout/box.html
  */
 
+//TODO: Move this class to Client because it is a UI class
 public class BrokenArrowUnitComparisonTool extends Application
 {
 
@@ -31,14 +32,12 @@ public class BrokenArrowUnitComparisonTool extends Application
     private VBox leftPanel;
     private VBox rightPanel;
 
-    // List of units loaded from CSV
-    private List<Unit> unitList;
-
     @Override
     public void start(Stage primaryStage)
     {
         // Load units from CSV (ensure the path is correct)
-        unitList = UnitStatsLoader.loadUnits("C:\\Users\\Nicko\\IdeaProjects\\CISC191-FinalProjectTemplate\\Server\\src\\main\\resources\\Broken Arrow Unit Stats.csv");
+        // List of units loaded from CSV
+        List<Unit> unitList = UnitStatsLoader.loadUnits("C:\\Users\\Nicko\\IdeaProjects\\CISC191-FinalProjectTemplate\\Server\\src\\main\\resources\\Broken Arrow Unit Stats.csv");
         System.out.println("Units loaded: " + unitList.size());
 
         // Create ComboBoxes and populate them with units
