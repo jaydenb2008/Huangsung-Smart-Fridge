@@ -9,22 +9,29 @@ package edu.sdccd.cisc191.template;
  * - A TableView to display food items with editable fields such as name, food type, quantity, and expiration date.
  * - Buttons to add and remove food items, and a checkbox to specify whether an item is a drink.
  */
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import javafx.util.converter.FloatStringConverter;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Optional;
 
 /**
  * This class defines the UI of the program.
@@ -110,6 +117,11 @@ public class UI {
             event.getRowValue().setName(event.getNewValue());
             saveCurrentItems();
         });
+        // Set a specified size for the nameColumn
+        nameColumn.setPrefWidth(100);
+        // Prevent users from moving columns around and resizing them
+        nameColumn.setReorderable(false);
+        nameColumn.setResizable(false);
 
         // Food Type Column
         TableColumn<FoodItem, String> foodTypeColumn = new TableColumn<>("Food Type");
@@ -119,6 +131,9 @@ public class UI {
             event.getRowValue().setFoodType(event.getNewValue());
             saveCurrentItems();
         });
+        foodTypeColumn.setPrefWidth(100);
+        foodTypeColumn.setReorderable(false);
+        foodTypeColumn.setResizable(false);
 
         // Quantity Left Column
         TableColumn<FoodItem, Float> quantityLeftColumn = new TableColumn<>("Quantity Left");
@@ -128,6 +143,10 @@ public class UI {
             event.getRowValue().setQuantityLeft(event.getNewValue());
             saveCurrentItems();
         });
+        quantityLeftColumn.setPrefWidth(100);
+        quantityLeftColumn.setReorderable(false);
+        quantityLeftColumn.setResizable(false);
+
 
         // Expiration Date Column
         TableColumn<FoodItem, String> expirationDateColumn = new TableColumn<>("Expiration Date");
@@ -138,22 +157,30 @@ public class UI {
             event.getRowValue().setExpirationDate(newDate);
             saveCurrentItems();
         });
+        expirationDateColumn.setPrefWidth(100);
+        expirationDateColumn.setReorderable(false);
+        expirationDateColumn.setResizable(false);
 
 
-            TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
-            isOpenedColumn.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof Drink) {
-                    return ((Drink) cellData.getValue()).isOpenedProperty().asObject();
-                }
-                return new SimpleBooleanProperty(false).asObject();
-            });
-            isOpenedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
-            isOpenedColumn.setOnEditCommit(event -> {
-                if (event.getRowValue() instanceof Drink) {
-                    ((Drink) event.getRowValue()).setOpened(event.getNewValue());
-                    saveCurrentItems();
-                }
-            });
+
+        TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
+        isOpenedColumn.setCellValueFactory(cellData -> {
+            if (cellData.getValue() instanceof Drink) {
+                return ((Drink) cellData.getValue()).isOpenedProperty().asObject();
+            }
+            return new SimpleBooleanProperty(false).asObject();
+        });
+        isOpenedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
+        isOpenedColumn.setOnEditCommit(event -> {
+            if (event.getRowValue() instanceof Drink) {
+                ((Drink) event.getRowValue()).setOpened(event.getNewValue());
+                saveCurrentItems();
+            }
+        });
+        isOpenedColumn.setPrefWidth(100);
+        isOpenedColumn.setReorderable(false);
+        isOpenedColumn.setResizable(false);
+
 
         // Adding columns to the table
         table.getColumns().addAll(nameColumn, foodTypeColumn, quantityLeftColumn, expirationDateColumn, isOpenedColumn);
@@ -240,16 +267,86 @@ public class UI {
      * @param isDrink if the drink box is checked a drink object will be instantiated
      */
     private void addFoodItem(boolean isDrink) {
-        FoodItem newItem;
+        // Create a dialog box to specify information to add a new food/drink item to the bridge
+        Dialog<FoodItem> dialog = new Dialog<>();
+        dialog.setTitle("Add Food/Drink");
 
-        if (isDrink) {
-            newItem = new Drink("New Drink", "Beverage", 1.0f, new Date(), false);
-        } else {
-            newItem = new FoodItem("New Item", "Unknown", 1.0f, new Date());
-        }
+        // Set the button types.
+        ButtonType okButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButtonType, ButtonType.CANCEL);
 
-        storage.addFood(newItem);
-        table.getItems().add(newItem);
+        // Create a VBox to hold our text fields.
+        VBox entry = new VBox(10); // 10 is spacing between nodes
+
+        // Create and configure text fields.
+        // TextField to specify the name of the food item
+        TextField nameField = new TextField();
+        nameField.setPromptText("Name");
+        // TextField to specify the food type
+        TextField foodTypeField = new TextField();
+        foodTypeField.setPromptText("Food Type");
+        // TextField to specify the quantity of the food item
+        TextField quantityField = new TextField();
+        quantityField.setPromptText("Quantity");
+        // TextField to specify the expiration date of the food item
+        TextField expirationField = new TextField();
+        expirationField.setPromptText("Expiration Date (MM/dd/yyyy)");
+
+        // Add text fields to the layout.
+        entry.getChildren().addAll(nameField, foodTypeField, quantityField, expirationField);
+        dialog.getDialogPane().setContent(entry);
+
+        // Request focus on the name field by default.
+        Platform.runLater(nameField::requestFocus);
+
+        // Convert the result to a FoodItem (or Drink) when the OK button is clicked.
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == okButtonType) {
+                if (nameField.getText().isEmpty() || foodTypeField.getText().isEmpty() || quantityField.getText().isEmpty() || expirationField.getText().isEmpty()) {
+                    // If any of the fields are empty, don't let the field to be saved.
+                    System.out.println("Empty, don't continue");
+                } else {
+                    // Fetch the name and type from the text boxes
+                    String name = nameField.getText();
+                    String type = foodTypeField.getText();
+
+                    // Parse quantity, defaulting to 1.0 if parsing fails.
+                    double quantity = 1.0;
+                    try {
+                        quantity = Double.parseDouble(quantityField.getText());
+                    } catch (NumberFormatException e) {
+                        System.out.println("NumberFormatException");
+                    }
+
+                    // Parse the expiration date. Adjust the format if needed.
+                    Date expiration = new Date();
+                    try {
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+                        expiration = sdf.parse(expirationField.getText());
+                    } catch (ParseException e) {
+                        // Optionally notify user or use a default date.
+                    }
+
+                    // Create the appropriate object based on isDrink.
+                    if (isDrink) {
+                        // Assume Drink extends FoodItem and takes a float for quantity.
+                        return new Drink(name, type, (float) quantity, expiration, false);
+                    } else {
+                        return new FoodItem(name, type, (float) quantity, expiration);
+                    }
+                }
+            }
+            return null;
+        });
+
+        // Grab the resultant from the user's input from the dialog
+        Optional<FoodItem> result = dialog.showAndWait();
+
+        // Push the new item into the storage and table
+        result.ifPresent(newItem -> {
+            storage.addFood(newItem);
+            table.getItems().add(newItem);
+        });
     }
 
     private void removeSelectedItem() {
