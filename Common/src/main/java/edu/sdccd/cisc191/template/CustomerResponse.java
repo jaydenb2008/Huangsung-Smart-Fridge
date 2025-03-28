@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CustomerResponse {
     private Integer id;
+    //again change from integer to int to prevent null values
     private String firstName;
     private String lastName;
+//suggest leaving java docs helps with colaberative enviroment
 
     @JsonIgnore
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -23,6 +25,7 @@ public class CustomerResponse {
         this.firstName = firstName;
         this.lastName = lastName;
     }
+    // good tha tyou used this. because it clarifies that your referencing to instance variables and helps confusion between parameters and instance variables.
 
     @Override
     public String toString() {
@@ -55,3 +58,5 @@ public class CustomerResponse {
         this.lastName = lastName;
     }
 }
+
+//going over .that

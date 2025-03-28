@@ -9,3 +9,5 @@ public class EmptyFridgeException extends Exception {
         super(message);
     }
 }
+
+//pretty solid code here.

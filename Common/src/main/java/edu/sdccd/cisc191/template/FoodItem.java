@@ -4,6 +4,7 @@ package edu.sdccd.cisc191.template;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+//Change and import java.time.Local date... replace Java.util.Date with that.
 
 /**
  * This class defines the attributes and methods of a food object that will be stored in the Huangsung Smart Fridge
@@ -14,11 +15,11 @@ import java.util.Date;
  */
 
 public class FoodItem {
-    private String name;
-    private String foodType;
-    private float quantityLeft;
-    private Date expirationDate;
-
+    private final String name;
+    private final  String foodType;
+    private final float quantityLeft;
+    private final Date expirationDate;
+//no changes after creation.. once you create the food item, its name type quantity and experation date should not change. using final makes sure these values stay the same.
 
     public FoodItem(String name, String foodType, float quantityLeft, Date expirationDate) {
         this.name = name;
