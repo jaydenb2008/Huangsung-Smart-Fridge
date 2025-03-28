@@ -13,7 +13,7 @@ import java.util.Date;
  * float quantityLeft: the amount remaining of said food (i.e. 4 tomatoes)
  * Date expirationDate: the date the food expires (in PST)
  */
-
+//
 public class FoodItem {
     private final String name;
     private final  String foodType;
