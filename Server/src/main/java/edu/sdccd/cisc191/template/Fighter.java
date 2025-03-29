@@ -18,7 +18,7 @@ public class Fighter extends Unit
                    int health, int sightRange, double unseenRange, int speed,
                    int weight, String abilities, int fuel)
     {
-        // Inheretence so InfantryUnit Class can inherent and actually utilize the methods from the Unit super class.
+        // Inheritance so InfantryUnit Class can inherent and actually utilize the methods from the Unit super class.
         super (unitName, unitType, specialization, price, armor, health, sightRange, unseenRange,speed, weight, abilities);
 
         //Setters created to set the value of the variable in the InfantryUnit Class

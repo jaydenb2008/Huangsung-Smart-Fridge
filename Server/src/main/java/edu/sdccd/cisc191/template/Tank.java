@@ -15,9 +15,9 @@ public class Tank extends Unit
     //Constructor to Initialize the private objects in tank and Unit class.
     public Tank(String unitName, String unitType, String specialization, int price, int armor,
                 int health, int sightRange, double unseenRange, int speed,
-                int weight, String abilities, int RearArmor)
+                int weight, String abilities)
     {
-        // Inheretence so Tank Class can inherent and actually utilize the methods from the Unit super class.
+        // Inheritance so Tank Class can inherent and actually utilize the methods from the Unit super class.
         super (unitName, unitType, specialization, price, armor, health, sightRange, unseenRange,speed, weight, abilities);
 
         //Setters created to set the value of the variable in the Tank Class

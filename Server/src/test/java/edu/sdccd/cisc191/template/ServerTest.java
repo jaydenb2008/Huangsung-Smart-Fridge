@@ -10,16 +10,7 @@ package edu.sdccd.cisc191.template;
  */
 
 import org.junit.jupiter.api.Test;
-import javafx.application.Application;
-import javafx.geometry.Insets;
-import javafx.scene.Scene;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
+
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,7 +22,7 @@ public class ServerTest
     @Test
     public void testInheritance()
     {
-        Unit tank = new Tank("Test Tank", "Test Tank", "Tank", 100, 100, 50, 200, 300, 18, 20, "TestAbilities",  80);
+        Unit tank = new Tank("Test Tank", "Test Tank", "Tank", 100, 100, 50, 200, 300, 18, 20, "TestAbilities");
         Unit fighter = new Fighter("Test Fighter", "Fighter", "Air", 200, 30, 150, 400, 1.75, 300, 4000, "Test Abilities", 120);
         Unit infantry = new InfantryUnit("Test Infantry", "Infantry", "Ground", 50, 10, 100, 500, 1.0, 15, 1000, "Test Abilities", 30);
 
@@ -45,7 +36,7 @@ public class ServerTest
     @Test
     public void TestIOStream()
     {
-        List<Unit> units = UnitStatsLoader.loadUnits("C:\\Users\\Nicko\\IdeaProjects\\CISC191-FinalProjectTemplate\\Server\\src\\main\\resources\\Broken Arrow Unit Stats.csv");
+        List<Unit> units = UnitStatsLoader.loadUnits();
         assertFalse(units.isEmpty());
     }
 
@@ -56,7 +47,7 @@ public class ServerTest
             List<Unit> units = new ArrayList<>();
             assertNotNull(units, "The units list should be created and not null");
             assertTrue(units.isEmpty(), "The units list should be empty upon initialization");
-            Unit testUnit = new Unit("Test Unit", "Infantry", "Test Specialization", 100, 10, 100, 500, 1.5, 20, 2000, "Test Abilities");
+            Unit testUnit = new Tank("Test Unit", "Infantry", "Test Specialization", 100, 10, 100, 500, 1.5, 20, 2000, "Test Abilities");
 
         }
 

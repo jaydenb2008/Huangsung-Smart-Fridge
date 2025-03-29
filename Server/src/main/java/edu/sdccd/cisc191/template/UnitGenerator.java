@@ -13,8 +13,7 @@ package edu.sdccd.cisc191.template;
 
 public class UnitGenerator {
 
-    public static Unit createUnit(String[] stats)
-    {
+    public static Unit createUnit(String[] stats) throws Exception {
         // Loops through all the lines in the CSV file and removes extra lines from strings.
         for (int i = 0; i < stats.length; i++)
         {
@@ -38,7 +37,7 @@ public class UnitGenerator {
             // Based on the unit type (category), create the appropriate unit object.
             if (unitType.equalsIgnoreCase("Tank"))
             {
-                return new Tank(unitName, unitType, specialization, price, armor, health, sightRange, unseenRange, speed, weight, abilities, extra);
+                return new Tank(unitName, unitType, specialization, price, armor, health, sightRange, unseenRange, speed, weight, abilities);
             }
 
             else if (unitType.equalsIgnoreCase("Fighter"))
@@ -53,8 +52,7 @@ public class UnitGenerator {
 
             else
             {
-                // Default to a basic Unit if category not recognized
-                return new Unit(unitName, unitType, specialization, price, armor, health, sightRange, unseenRange, speed, weight, abilities);
+                return new BasicUnit(unitName, unitType, specialization, price, armor, health, sightRange, unseenRange, speed, weight, abilities);
             }
     }
 
