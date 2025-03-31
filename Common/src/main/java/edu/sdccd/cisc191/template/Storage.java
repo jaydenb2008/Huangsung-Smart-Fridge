@@ -86,8 +86,9 @@ public class Storage {
      * If the fridge is full when the user wants to add another food item, this method will be called
      * adds 5 more spaces to the fridge and copies over the items in the old fridge to the new one
      */
+    // Consider only adding 1 new space at a time to conserve memory. - Andy Ly
     public synchronized void resizeArray() {
-        int newSize = fridgeSize + 5;
+        int newSize = fridgeSize + 1;
         FoodItem[][] newFridge = new FoodItem[newSize][1];
 
         for (int i = 0; i < fridgeSize; i++) {
