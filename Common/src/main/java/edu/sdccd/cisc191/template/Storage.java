@@ -1,5 +1,8 @@
 package edu.sdccd.cisc191.template;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 /**
  * Describes the attributes, methods, and behavior of a storage class
  * FoodItem[][] fridge = the 2D array that will store all the FoodItem and Drink objects like a fridge
@@ -10,11 +13,13 @@ public class Storage {
     private FoodItem[][] fridge;
     private int fridgeSize;
     private int itemCount;
+    private final Lock storageLock; //Ensures threat-safety with a lock
 
     public Storage(int fridgeSize) {
         this.fridge = new FoodItem[fridgeSize][1];
         this.fridgeSize = fridgeSize;
         this.itemCount = 0;
+        this.storageLock = new ReentrantLock(); //Creates a reentrant lock
     }
 
     public int getItemCount() {
@@ -31,10 +36,15 @@ public class Storage {
      * @return the item in the fridge with a placement index
      */
     public FoodItem getFoodItem(int index) {
-        if (index >= 0 && index < itemCount) {
-            return fridge[index][0];
+        storageLock.lock();  // Locks before accessing resources
+        try {
+            if (index >= 0 && index < itemCount) {
+                return fridge[index][0];
+            }
+            return null;
+        } finally {
+            storageLock.unlock();  // Releases the lock after using it
         }
-        return null;
     }
 
     /**
@@ -43,12 +53,16 @@ public class Storage {
      * @param food the food item that will be added
      */
     public synchronized void addFood(FoodItem food) {
-        if (itemCount == fridgeSize) {
-            resizeArray();
+        storageLock.lock();  // Lock to protect
+        try {
+            if (itemCount == fridgeSize) {
+                resizeArray();
+            }
+            fridge[itemCount][0] = food;
+            itemCount++;
+        } finally {
+            storageLock.unlock();  // Releases the lock after modification
         }
-
-        fridge[itemCount][0] = food;
-        itemCount++;
     }
 
     /**
@@ -57,20 +71,18 @@ public class Storage {
      * @param name the name of the food item to be removed
      */
     public synchronized void removeFood(String name) {
-        boolean found = false;
-        for (int i = 0; i < itemCount; i++) {
-            //if index is not empty and name matches, remove item
-            if (fridge[i][0] != null && fridge[i][0].getName().equals(name)) {
-                found = true;
-                fridge[i][0] = null;
+        storageLock.lock();  // Lock to prevent modifications
+        try {
+            boolean found = false;
+            for (int i = 0; i < itemCount; i++) {
+                if (fridge[i][0] != null && fridge[i][0].getName().equals(name)) {
+                    found = true;
+                    fridge[i][0] = null;
+                }
+                if (found && i < itemCount - 1) {
+                    fridge[i][0] = fridge[i + 1][0];
+                }
             }
-
-            //if the item was not the last item in the array, shift all proceeding items to the left to fill in gaps
-            if (found && i < itemCount - 1) {
-                fridge[i][0] = fridge[i+1][0];
-            }
-
-            //ensure that there is one less item in the fridge before updating the counter
             if (found) {
                 fridge[itemCount - 1][0] = null;
                 itemCount--;
@@ -78,6 +90,8 @@ public class Storage {
             } else {
                 System.out.println("Item not found");
             }
+        } finally {
+            storageLock.unlock();  // Release lock after processing
         }
     }
 
@@ -87,14 +101,15 @@ public class Storage {
      * adds 5 more spaces to the fridge and copies over the items in the old fridge to the new one
      */
     public synchronized void resizeArray() {
-        int newSize = fridgeSize + 5;
-        FoodItem[][] newFridge = new FoodItem[newSize][1];
-
-        for (int i = 0; i < fridgeSize; i++) {
-            newFridge[i][0] = fridge[i][0];
+        storageLock.lock();  // Lock during resizing
+        try {
+            int newSize = fridgeSize + 5;
+            FoodItem[][] newFridge = new FoodItem[newSize][1];
+            System.arraycopy(fridge, 0, newFridge, 0, fridgeSize); // Copy items to new array
+            this.fridge = newFridge;
+            this.fridgeSize = newSize;
+        } finally {
+            storageLock.unlock();  // Release the lock
         }
-
-        this.fridge = newFridge;
-        this.fridgeSize = newSize;
     }
 }
