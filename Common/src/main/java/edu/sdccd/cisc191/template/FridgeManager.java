@@ -5,25 +5,13 @@ import javafx.application.Application;
 import javafx.stage.Stage;
 
 
-public class FridgeManager extends Application {
+public class FridgeManager {
 
-    private Storage storage = new Storage(10);
-    public UI ui = new UI(this, storage);
+    private final Storage storage;
 
-
-    public static void main(String[] args) {
-        // Launch the JavaFX application
-        launch(args);
+    public FridgeManager() {
+        this.storage = new Storage(10);
     }
-
-
-    @Override
-    public void start(Stage primaryStage){
-
-
-        ui.createStartScreen(primaryStage);
-    }
-
     public Storage getStorage() {
         return storage;
     }

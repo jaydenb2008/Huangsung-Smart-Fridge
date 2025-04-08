@@ -32,7 +32,7 @@ import java.util.Date;
  * Starts the notifier warning the user of expired foods
  * Loads and saves all the foods into csv
  */
-public class UI {
+public class UI implements NotifierListener{
 
 
     FridgeManager fm;
@@ -165,7 +165,7 @@ public class UI {
         loadStoredItems();
 
         if(storage.getItemCount() > 0) {
-            Notifier notifier = new Notifier("UI notifier", storage, this);
+            Notifier notifier = new Notifier("UI notifier", storage, this); // 'this' is the UI, which implements NotifierListener
             notifier.start();
         }
 
@@ -268,6 +268,27 @@ public class UI {
         } else {
             System.out.println("No item selected for removal.");
         }
+    }
+
+    @Override
+    public void onItemsExpired(String[][] expiredItems) {
+        showExpirationAlert(expiredItems);
+
+    }
+    public void showExpirationAlert(String[][] expiredItems) {
+        StringBuilder message = new StringBuilder("The following items are expired:\n");
+
+        for (String[] itemRow : expiredItems) {
+            if (itemRow[0] != null) {
+                message.append("- ").append(itemRow[0]).append("\n");
+            }
+        }
+
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Expired Items Alert");
+        alert.setHeaderText("Some food items have expired!");
+        alert.setContentText(message.toString());
+        alert.showAndWait();
     }
 }
 
