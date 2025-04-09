@@ -1,0 +1,3 @@
+module Server {
+    requires Common;
+}

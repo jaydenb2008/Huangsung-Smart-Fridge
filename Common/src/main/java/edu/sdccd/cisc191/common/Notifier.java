@@ -1,10 +1,6 @@
-package edu.sdccd.cisc191.template;
+package edu.sdccd.cisc191.common;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Defines the structure and behavior of the background thread used to check if items in the fridge are expired

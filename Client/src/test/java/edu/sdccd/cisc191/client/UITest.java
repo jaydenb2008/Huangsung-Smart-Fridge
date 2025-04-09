@@ -1,5 +1,9 @@
-package edu.sdccd.cisc191.template;
+package edu.sdccd.cisc191.client;
 
+import edu.sdccd.cisc191.common.Drink;
+import edu.sdccd.cisc191.common.FoodItem;
+import edu.sdccd.cisc191.common.FridgeManager;
+import edu.sdccd.cisc191.common.Storage;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;

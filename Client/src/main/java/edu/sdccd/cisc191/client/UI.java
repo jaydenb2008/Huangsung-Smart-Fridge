@@ -1,4 +1,4 @@
-package edu.sdccd.cisc191.template;
+package edu.sdccd.cisc191.client;
 
 /**
  * This class provides a GUI to interact with the Smart Fridge.
@@ -9,6 +9,7 @@ package edu.sdccd.cisc191.template;
  * - A TableView to display food items with editable fields such as name, food type, quantity, and expiration date.
  * - Buttons to add and remove food items, and a checkbox to specify whether an item is a drink.
  */
+import edu.sdccd.cisc191.common.*;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -32,7 +33,7 @@ import java.util.Date;
  * Starts the notifier warning the user of expired foods
  * Loads and saves all the foods into csv
  */
-public class UI implements NotifierListener{
+public class UI implements NotifierListener {
 
 
     FridgeManager fm;

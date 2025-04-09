@@ -1,8 +1,4 @@
-package edu.sdccd.cisc191.template;
-
-
-import javafx.application.Application;
-import javafx.stage.Stage;
+package edu.sdccd.cisc191.common;
 
 
 public class FridgeManager {
