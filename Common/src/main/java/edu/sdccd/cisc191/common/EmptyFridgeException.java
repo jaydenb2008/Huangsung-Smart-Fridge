@@ -1,4 +1,4 @@
-package edu.sdccd.cisc191.template;
+package edu.sdccd.cisc191.common;
 
 /**
  * an exception used when the 2d array fridge does not have any food items in it

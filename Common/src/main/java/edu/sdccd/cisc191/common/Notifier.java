@@ -1,10 +1,6 @@
-package edu.sdccd.cisc191.template;
+package edu.sdccd.cisc191.common;
 
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Defines the structure and behavior of the background thread used to check if items in the fridge are expired
@@ -15,14 +11,15 @@ public class Notifier extends Thread {
     private final String name;
     private final Storage storage;
     private String[][] expiredItems; // Store expired item names
-    private UI ui; // Reference to UI for notifications
+    private final NotifierListener listener;
 
 
 
-    public Notifier(String name, Storage storage, UI ui) {
+
+    public Notifier(String name, Storage storage, NotifierListener listener) {
         this.name = name;
         this.storage = storage;
-        this.ui = ui;
+        this.listener = listener;
         this.expiredItems = new String[storage.getItemCount()][2]; // Store expired item details. Each row holds name and expiration date
     }
 
@@ -54,30 +51,12 @@ public class Notifier extends Thread {
                 }
             }
 
-            if (expiredCount > 0) {
-                Platform.runLater(() -> {
-                    showExpirationAlert(expiredItems);
-                }); // Notify the UI
+            if (expiredCount > 0 && listener != null) {
+                Platform.runLater(() -> listener.onItemsExpired(expiredItems));
             }
 
         } catch (EmptyFridgeException e) {
             System.err.println(e.getMessage());
         }
-    }
-
-    public void showExpirationAlert(String[][] expiredItems) {
-        StringBuilder message = new StringBuilder("The following items are expired:\n");
-
-        for (String[] itemRow : expiredItems) {
-            if (itemRow[0] != null) {
-                message.append("- ").append(itemRow[0]).append("\n");
-            }
-        }
-
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Expired Items Alert");
-        alert.setHeaderText("Some food items have expired!");
-        alert.setContentText(message.toString());
-        alert.showAndWait();
     }
 }
