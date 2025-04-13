@@ -4,6 +4,7 @@ module Client {
     requires java.desktop;
     requires javafx.controls;
     requires Common;
+    requires Server;
 
     exports edu.sdccd.cisc191.client to javafx.graphics;
 }

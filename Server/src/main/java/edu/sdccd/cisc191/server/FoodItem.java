@@ -1,4 +1,4 @@
-package edu.sdccd.cisc191.common;
+package edu.sdccd.cisc191.server;
 
 
 import java.text.ParseException;

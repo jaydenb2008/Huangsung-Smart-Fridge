@@ -1,4 +1,4 @@
-package edu.sdccd.cisc191.common;
+package edu.sdccd.cisc191.server;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
