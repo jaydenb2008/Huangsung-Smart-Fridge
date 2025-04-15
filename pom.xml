@@ -41,7 +41,12 @@
             <version>${jupiter.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>3.4.3</version>
+        </dependency>
     </dependencies>
 
     <build>
