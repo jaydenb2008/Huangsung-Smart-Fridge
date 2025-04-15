@@ -10,7 +10,7 @@ import javafx.application.Platform;
 public class Notifier extends Thread {
     private final String name;
     private final Storage storage;
-    private String[][] expiredItems; // Store expired item names
+    private final String[][] expiredItems; // Store expired item names
     private final NotifierListener listener;
 
 

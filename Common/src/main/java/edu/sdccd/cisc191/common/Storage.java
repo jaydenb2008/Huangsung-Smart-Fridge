@@ -1,4 +1,4 @@
-package edu.sdccd.cisc191.server;
+package edu.sdccd.cisc191.common;
 
 /**
  * Describes the attributes, methods, and behavior of a storage class

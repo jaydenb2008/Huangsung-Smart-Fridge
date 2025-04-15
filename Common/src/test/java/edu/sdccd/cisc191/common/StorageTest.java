@@ -1,5 +1,6 @@
-package edu.sdccd.cisc191.server;
+package edu.sdccd.cisc191.common;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,20 +19,20 @@ public class StorageTest {
         testFridge.addFood(eggs);
         testFridge.addFood(milk);
 
-        assertEquals(3, testFridge.getItemCount());
-        assertEquals("Eggs", testFridge.getFoodItem(1).getName());
+        Assertions.assertEquals(3, testFridge.getItemCount());
+        Assertions.assertEquals("Eggs", testFridge.getFoodItem(1).getName());
 
         testFridge.removeFood("Eggs");
-        assertEquals(2, testFridge.getItemCount());
-        assertEquals("Milk", testFridge.getFoodItem(1).getName());
+        Assertions.assertEquals(2, testFridge.getItemCount());
+        Assertions.assertEquals("Milk", testFridge.getFoodItem(1).getName());
         assertNull(testFridge.getFoodItem(2));
 
         testFridge.addFood(eggs);
         testFridge.addFood(lemonade);
-        assertEquals(4, testFridge.getItemCount());
-        assertEquals(8, testFridge.getFridgeSize());
+        Assertions.assertEquals(4, testFridge.getItemCount());
+        Assertions.assertEquals(8, testFridge.getFridgeSize());
 
         testFridge.removeFood("Bacon");
-        assertEquals(4, testFridge.getItemCount());
+        Assertions.assertEquals(4, testFridge.getItemCount());
     }
 }

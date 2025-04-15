@@ -10,6 +10,7 @@ package edu.sdccd.cisc191.client;
  * - Buttons to add and remove food items, and a checkbox to specify whether an item is a drink.
  */
 import edu.sdccd.cisc191.common.*;
+import javafx.application.Application;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleFloatProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -33,18 +34,22 @@ import java.util.Date;
  * Starts the notifier warning the user of expired foods
  * Loads and saves all the foods into csv
  */
-public class UI implements NotifierListener {
-
-
+public class UI extends Application implements NotifierListener {
     FridgeManager fm;
     Stage window;
-    private final Storage storage;
+    Storage storage;
     protected TableView<FoodItem> table;
     private static final String CSV_FILE = "food_items.csv";
 
-    public UI(FridgeManager fm, Storage storage) {
-        this.fm = fm;
-        this.storage = storage;
+    @Override
+    public void start(Stage primaryStage) {
+        this.fm = new FridgeManager();
+        this.storage = fm.getStorage();
+        this.createStartScreen(primaryStage);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 
     /**

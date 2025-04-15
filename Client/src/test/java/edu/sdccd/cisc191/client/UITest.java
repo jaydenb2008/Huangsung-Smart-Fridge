@@ -8,33 +8,36 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.testfx.framework.junit5.ApplicationExtension;
-import org.testfx.framework.junit5.Start;
-
+import org.testfx.framework.junit5.ApplicationTest;
 import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.testfx.util.WaitForAsyncUtils.waitForFxEvents;
 
-@ExtendWith(ApplicationExtension.class)
-public class UITest {
-
+public class UITest extends ApplicationTest {
+    private FridgeManager testFM;
     private UI ui;
     private Storage mockStorage;
     private TableView<FoodItem> table;
 
-    @Start
+    @Override
     public void start(Stage stage) {
+        this.testFM = new FridgeManager();
+
         // Create a mock Storage with test data
         mockStorage = new Storage(5);
         mockStorage.addFood(new FoodItem("Apple", "Fruit", 3.0f, new Date()));
         mockStorage.addFood(new Drink("Milk", "Dairy", 1.5f, new Date(), false));
 
-        // Create UI with mock storage
-        ui = new UI(new FridgeManager(), mockStorage);
-        ui.createMainField(stage);  // Initialize UI with table
+        // Initialize the UI with the mock storage and fridge manager
+        ui = new UI();
+        ui.storage = mockStorage;
+        ui.fm = testFM;
 
+        // Start the UI (this internally manages its scene)
+        ui.start(stage);  // This is assumed to create and set the scene within the UI class
+        stage.show();
+
+        // Access the table from the UI class
         table = ui.table; // Reference to the table in UI
     }
 

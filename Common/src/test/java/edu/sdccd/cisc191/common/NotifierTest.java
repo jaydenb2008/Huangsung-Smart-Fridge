@@ -4,11 +4,18 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class HuangsungTest {
+class NotifierTest {
 
     @Test
     void testNotifierThread() throws InterruptedException {
         Storage testFridge = new Storage(4);
+        NotifierListener listener = new NotifierListener() {
+
+            @Override
+            public void onItemsExpired(String[][] expiredItems) {
+
+            }
+        };
 
         FoodItem tomatoes = new FoodItem("Tomatoes", "Vegetable", 3.0f, FoodItem.convertToDate("03-18-2025"));
         FoodItem eggs = new FoodItem("Eggs", "Poultry", 12.0f, FoodItem.convertToDate("03-16-2027"));
@@ -23,12 +30,9 @@ class HuangsungTest {
         int notifierCount = testFridge.getFridgeSize();
         Notifier[] notifiers = new Notifier[notifierCount];
 
-        FridgeManager dummyManager = new FridgeManager();  // Dummy FridgeManager
-        Storage testFridge2 = new Storage(4);
-        UI dummyUI = new UI(dummyManager, testFridge2);
 
         for (int i = 0; i < notifierCount; i++) {
-            notifiers[i] = new Notifier("Expiration Notifier " + i, testFridge, dummyUI);
+            notifiers[i] = new Notifier("Expiration Notifier " + i, testFridge, listener);
         }
 
         for (int i = 0; i < notifierCount; i++) {
