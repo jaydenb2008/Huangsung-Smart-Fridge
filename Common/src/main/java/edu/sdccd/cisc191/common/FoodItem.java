@@ -59,6 +59,8 @@ public class FoodItem {
         this.expirationDate = expirationDate;
     }
 
+
+
     /**
      * Converts the user's valid String expiration date input into a Date for constructing the FoodItem object
      * @param userInputDate = the String expiration date the user inputs in the UI

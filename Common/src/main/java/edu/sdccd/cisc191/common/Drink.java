@@ -13,7 +13,7 @@ import java.util.Date;
 public class Drink extends FoodItem {
 
     //SimpleBooleanProperty used to notify UI changes
-    private BooleanProperty isOpened = new SimpleBooleanProperty(false);
+    private final BooleanProperty isOpened = new SimpleBooleanProperty(false);
     // Set false to display default drink is not opened
 
     public Drink(String name, String foodType, float quantityLeft, Date expirationDate, boolean isOpened) {
