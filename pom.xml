@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.4.4</version>
+        <relativePath/> <!-- Important: Don't inherit from local file -->
+    </parent>
     <groupId>edu.sdccd.cisc191.template</groupId>
     <artifactId>FinalProject</artifactId>
     <packaging>pom</packaging>
@@ -34,6 +39,7 @@
         <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
     </properties>
 
+
     <dependencies>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -41,7 +47,14 @@
             <version>${jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
     </dependencies>
+
+
 
     <build>
         <plugins>

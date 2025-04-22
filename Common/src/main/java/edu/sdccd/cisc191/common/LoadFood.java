@@ -39,6 +39,8 @@ public class LoadFood {
                     // Add item to the 2D array in Storage
                     storage.addFood(item);
                 }
+
+                //TODO add another column for isOpened for drinks
             }
         } catch (IOException | java.text.ParseException e) {
             System.err.println("Error while loading food items from CSV: " + e.getMessage());
