@@ -172,6 +172,23 @@ public class UI extends Application implements NotifierListener {
             }
         });
 
+        /**
+         * TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
+         *             isOpenedColumn.setCellValueFactory(cellData -> {
+         *                 if (cellData.getValue() instanceof Drink) {
+         *                     return ((Drink) cellData.getValue()).isOpenedProperty().asObject();
+         *                 }
+         *                 return new SimpleBooleanProperty(false).asObject();
+         *             });
+         *             isOpenedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
+         *             isOpenedColumn.setOnEditCommit(event -> {
+         *                 if (event.getRowValue() instanceof Drink) {
+         *                     ((Drink) event.getRowValue()).setOpened(event.getNewValue());
+         *                     saveCurrentItems();
+         *                 }
+         *             });
+         */
+
 
         // Adding columns to the table
         table.getColumns().addAll(nameColumn, foodTypeColumn, quantityLeftColumn, expirationDateColumn, isOpenedColumn);
