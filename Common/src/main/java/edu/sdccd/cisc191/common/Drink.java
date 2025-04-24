@@ -36,5 +36,7 @@ public class Drink extends FoodItem {
         this.isOpened = isOpened;
     }
 
-
+    public boolean isOpened() {
+        return isOpened;
+    }
 }

@@ -3,5 +3,5 @@ module Common {
     requires javafx.graphics;
     requires jakarta.persistence;
 
-    exports edu.sdccd.cisc191.common to Client, Server, Common;
+    exports edu.sdccd.cisc191.common;
 }

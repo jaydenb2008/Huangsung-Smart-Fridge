@@ -7,4 +7,6 @@ module Server {
     requires spring.beans;
     requires spring.web;
 
+    exports edu.sdccd.cisc191.server to spring.beans;
+    exports edu.sdccd.cisc191.server.controllers to spring.beans;
 }
