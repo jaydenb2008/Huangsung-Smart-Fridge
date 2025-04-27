@@ -1,4 +1,0 @@
-module Server {
-    requires Common;
-
-}

@@ -146,20 +146,49 @@ public class UI extends Application implements NotifierListener {
         });
 
 
-            TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
-            isOpenedColumn.setCellValueFactory(cellData -> {
-                if (cellData.getValue() instanceof Drink) {
-                    return ((Drink) cellData.getValue()).isOpenedProperty().asObject();
-                }
-                return new SimpleBooleanProperty(false).asObject();
-            });
-            isOpenedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
-            isOpenedColumn.setOnEditCommit(event -> {
-                if (event.getRowValue() instanceof Drink) {
-                    ((Drink) event.getRowValue()).setOpened(event.getNewValue());
-                    saveCurrentItems();
-                }
-            });
+        TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
+        isOpenedColumn.setEditable(true);
+        isOpenedColumn.setCellValueFactory(cellData -> {
+            if (cellData.getValue() instanceof Drink) {
+                boolean opened = ((Drink) cellData.getValue()).getOpened(); // assuming your getter is isOpened()
+                return new SimpleBooleanProperty(opened).asObject();
+            }
+            return new SimpleBooleanProperty(false).asObject(); // non-Drink items show false
+        });
+
+        // Editable checkbox cell factory
+        isOpenedColumn.setCellFactory(tc -> {
+            CheckBoxTableCell<FoodItem, Boolean> cell = new CheckBoxTableCell<>();
+            cell.setEditable(true);
+            return cell;
+        });
+
+// On edit commit: cast safely and update the actual object
+        isOpenedColumn.setOnEditCommit(event -> {
+            FoodItem item = event.getRowValue();
+            if (item instanceof Drink) {
+                ((Drink) item).setOpened();
+                saveCurrentItems();
+            }
+        });
+
+        /**
+         * TableColumn<FoodItem, Boolean> isOpenedColumn = new TableColumn<>("Opened?");
+         *             isOpenedColumn.setCellValueFactory(cellData -> {
+         *                 if (cellData.getValue() instanceof Drink) {
+         *                     return ((Drink) cellData.getValue()).isOpenedProperty().asObject();
+         *                 }
+         *                 return new SimpleBooleanProperty(false).asObject();
+         *             });
+         *             isOpenedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
+         *             isOpenedColumn.setOnEditCommit(event -> {
+         *                 if (event.getRowValue() instanceof Drink) {
+         *                     ((Drink) event.getRowValue()).setOpened(event.getNewValue());
+         *                     saveCurrentItems();
+         *                 }
+         *             });
+         */
+
 
         // Adding columns to the table
         table.getColumns().addAll(nameColumn, foodTypeColumn, quantityLeftColumn, expirationDateColumn, isOpenedColumn);
